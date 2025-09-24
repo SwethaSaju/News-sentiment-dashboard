@@ -4,28 +4,51 @@ import pandas as pd
 import streamlit as st
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-# Install dependency in requirements.txt
-# streamlit-autorefresh
-
 from streamlit_autorefresh import st_autorefresh
 
-# Refresh every 60 seconds
+# ----------------------------
+# Auto-refresh every 60 seconds
+# ----------------------------
 st_autorefresh(interval=60 * 1000, key="news_refresh")
 
 # ----------------------------
-# 1. Fetch News
+# Page Title
 # ----------------------------
-API_KEY = "aa9f72d6bad1c3ffbd42dcba1e7b7ce5"
+st.set_page_config(page_title="Real-Time News Sentiment", layout="wide")
+st.title("📰 Real-Time News Sentiment Dashboard")
 
+# ----------------------------
+# API Key
+# ----------------------------
+API_KEY = st.secrets.get("aa9f72d6bad1c3ffbd42dcba1e7b7ce5", "")  # Use Streamlit secrets
+
+# ----------------------------
+# Fetch News
+# ----------------------------
 def fetch_news():
-    url = f"https://gnews.io/api/v4/top-headlines?token={API_KEY}&lang=en&country=us&max=10"
-    response = requests.get(url).json()
-    articles = response.get("articles", [])
-    data = [{"headline": art["title"], "description": art["description"]} for art in articles]
-    return pd.DataFrame(data)
+    try:
+        url = f"https://gnews.io/api/v4/top-headlines?token={API_KEY}&lang=en&country=us&max=10"
+        response = requests.get(url).json()
+        articles = response.get("articles", [])
+        data = [{"headline": art["title"], "description": art["description"]} for art in articles]
+        df = pd.DataFrame(data)
+        if df.empty:
+            raise ValueError("API returned no articles")
+        return df
+    except:
+        # Fallback dummy headlines if API fails
+        return pd.DataFrame({
+            "headline": [
+                "Stock market hits record high",
+                "Economic crisis causes panic selling",
+                "New vaccine brings hope",
+                "Natural disaster destroys thousands of homes"
+            ],
+            "description": [""]*4
+        })
 
 # ----------------------------
-# 2. Train Dummy ML Model
+# Train Dummy ML Model
 # ----------------------------
 train_headlines = [
     "Stock market hits record high",
@@ -41,11 +64,21 @@ model = LogisticRegression()
 model.fit(X_train, labels)
 
 # ----------------------------
-# 3. Streamlit Dashboard
+# Fetch news and classify sentiment
 # ----------------------------
-st.set_page_config(page_title="Real-Time News Sentiment", layout="wide")
-st.title("📰 Real-Time News Sentiment Dashboard")
-placeholder = st.empty()
+df_news = fetch_news()
+X_test = vectorizer.transform(df_news["headline"])
+preds = model.predict(X_test)
+df_news["Sentiment"] = ["Positive" if p==1 else "Negative" for p in preds]
+
+# ----------------------------
+# Display Dashboard
+# ----------------------------
+st.subheader("Latest Headlines with Sentiment")
+st.table(df_news[["headline", "Sentiment"]])
+
+st.subheader("Sentiment Counts")
+st.bar_chart(df_news["Sentiment"].value_counts())
 
 
             
