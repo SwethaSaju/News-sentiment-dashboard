@@ -4,6 +4,13 @@ import pandas as pd
 import streamlit as st
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+# Install dependency in requirements.txt
+# streamlit-autorefresh
+
+from streamlit_autorefresh import st_autorefresh
+
+# Refresh every 60 seconds
+st_autorefresh(interval=60 * 1000, key="news_refresh")
 
 # ----------------------------
 # 1. Fetch News
