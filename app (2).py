@@ -7,7 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1HS6vgS-l3skXkQc8pFKjrOF4QzZTPijH
 """
 
-pip install streamlit pyspark requests pandas
 
 # ----------------------------
 # app.py : Real-Time News Sentiment Dashboard
