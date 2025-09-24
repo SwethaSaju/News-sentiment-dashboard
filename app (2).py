@@ -47,20 +47,6 @@ st.set_page_config(page_title="Real-Time News Sentiment", layout="wide")
 st.title("📰 Real-Time News Sentiment Dashboard")
 placeholder = st.empty()
 
-while True:
-    df_news = fetch_news()
-    if not df_news.empty:
-        X_test = vectorizer.transform(df_news["headline"])
-        preds = model.predict(X_test)
-        df_news["Sentiment"] = ["Positive" if x==1 else "Negative" for x in preds]
-
-        with placeholder.container():
-            st.subheader("Latest Headlines with Sentiment")
-            st.table(df_news[["headline", "Sentiment"]])
-            st.bar_chart(df_news["Sentiment"].value_counts())
-    else:
-        st.warning("No news fetched.")
-    st.experimental_rerun()  # auto-refresh dashboard
 
             
 
