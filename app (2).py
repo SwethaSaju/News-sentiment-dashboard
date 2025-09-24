@@ -8,7 +8,7 @@ from sklearn.linear_model import LogisticRegression
 # ----------------------------
 # 1. Fetch News
 # ----------------------------
-API_KEY = "YOUR_GNEWS_API_KEY"
+API_KEY = "aa9f72d6bad1c3ffbd42dcba1e7b7ce5"
 
 def fetch_news():
     url = f"https://gnews.io/api/v4/top-headlines?token={API_KEY}&lang=en&country=us&max=10"
