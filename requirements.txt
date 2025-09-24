@@ -1,4 +1,8 @@
 streamlit
-pyspark
-requests
 pandas
+requests
+scikit-learn
+beautifulsoup4
+lxml
+html5lib
+
