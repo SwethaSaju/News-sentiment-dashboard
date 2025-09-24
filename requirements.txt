@@ -5,4 +5,5 @@ scikit-learn
 beautifulsoup4
 lxml
 html5lib
+streamlit-autorefresh
 
